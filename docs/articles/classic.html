@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>详情</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>MikeCFBDSIR2149 GitHub Pages</h1>
+    </header>
+    <nav>
+        <button onclick="location.href='../index.html'">首页</button>
+        <button id="github-btn">
+            访问项目
+            <img src="../icon/github-mark-white.png" alt="GitHub" 
+            style="height:20px; margin-left:10px; margin-right:10px;">
+            GitHub 页面
+        </button>
+        <!-- 可添加更多导航按钮 -->
+    </nav>
+    <main>
+        <div id="article-content"></div>
+    </main>
+    <footer>
+        &copy; 2025 MikeCFBDSIR2149 翟赜昊
+    </footer>
+    <script>
+        fetch('../articles.json')
+            .then(res => res.json())
+            .then(data => {
+                const id = new URLSearchParams(window.location.search).get('id');
+                const article = data.find(a => a.id == id);
+                if (article) {
+                    let typeLine = '';
+                    if (article.type === 'personal') {
+                        typeLine = `<div class="article-type-line personal">独立项目</div>`;
+                    } else if (article.type === 'team') {
+                        typeLine = `<div class="article-type-line team">团队项目</div>`;
+                    }
+                    let html = `<h2>${article.title}</h2>${typeLine}<p class="article-summary">${article.summary}</p>`;
+                    article.content.forEach(item => {
+                        if (item.type === 'text') {
+                            html += `<p>${item.value}</p>`;
+                        } else if (item.type === 'image') {
+                            html += `<img src="${item.src}" alt="${item.alt}" style="max-width:100%;margin:16px 0;">`;
+                        }
+                    });
+                    document.getElementById('article-content').innerHTML = html;
+                    if (article.link) {
+                        document.getElementById('github-btn').onclick = function() {
+                            if (article.public === false) {
+                                if (confirm('该项目可能未公开，是否继续访问？')) {
+                                    location.href = article.link;
+                                }
+                            } else {
+                                location.href = article.link;
+                            }
+                        };
+                    }
+                } else {
+                    document.getElementById('article-content').innerHTML = '<div class="article-not-found">很抱歉，未找到内容。</div>';
+                }
+            });
+    </script>
+</body>
+</html>

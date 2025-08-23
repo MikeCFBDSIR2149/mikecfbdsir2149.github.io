@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "title": "标题一",
+        "summary": "文章一的摘要。",
+        "type": "personal",
+        "public": true,
+        "link": "https://github.com/MikeCFBDSIR2149",
+        "content": [
+        { "type": "text", "value": "开头" },
+        { "type": "image", "src": "../images/1-1.png", "alt": "图片1-1" },
+        { "type": "text", "value": "中间" },
+        { "type": "image", "src": "../images/1-2.png", "alt": "图片1-2" },
+        { "type": "text", "value": "结尾" }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "标题二",
+        "summary": "文章二的摘要。",
+        "type": "team",
+        "public": false,
+        "link": "https://github.com/MikeCFBDSIR2149",
+        "content": [
+        { "type": "text", "value": "开头" },
+        { "type": "image", "src": "../images/2-1.png", "alt": "图片2-1" },
+        { "type": "text", "value": "正文" }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "标题三",
+        "summary": "文章三的摘要。",
+        "type": "personal",
+        "public": false,
+        "link": "https://github.com/MikeCFBDSIR2149",
+        "content": [
+        { "type": "text", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
+        { "type": "image", "src": "../images/3-1.png", "alt": "图片3-1" },
+        { "type": "text", "value": "中间" },
+        { "type": "image", "src": "../images/3-2.png", "alt": "图片3-2" },
+        { "type": "text", "value": "结尾" }
+        ]
+    },
+    {
+        "id": 4,
+        "title": "标题四",
+        "summary": "文章四的摘要。",
+        "type": "other",
+        "public": false,
+        "link": "https://github.com/MikeCFBDSIR2149",
+        "content": [
+        { "type": "text", "value": "开头" },
+        { "type": "image", "src": "../images/4-1.png", "alt": "图片4-1" },
+        { "type": "text", "value": "正文" }
+        ]
+    }
+]

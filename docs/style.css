@@ -14,7 +14,7 @@ nav {
     display: flex;
     justify-content: space-evenly;
     background: #333;
-    padding: 0 50px;
+    padding: 0 100px;
 }
 nav button {
     flex: 1;
@@ -66,4 +66,109 @@ footer {
         margin-right: 6px;
         height: 18px;
     }
+}
+.article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 600px;
+}
+.article-item {
+    background: #f0f0f0;
+    border-radius: 16px;
+    padding: 20px 32px 24px 32px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    margin: 0 auto;
+    position: relative;
+    display: block;
+}
+.article-type {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    padding: 4px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #444;
+    color: #fff;
+    display: inline-block;
+}
+.article-type.personal {
+    background: #2196f3;
+    color: #fff;
+}
+.article-type.team {
+    background: #ff9307;
+    color: #ffffff;
+}
+.article-type-line {
+    margin: 8px 0 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 2px 16px;
+    border-radius: 8px;
+    display: inline-block;
+}
+.article-type-line.personal {
+    background: #f0f0f0;
+    color: #2196f3;
+}
+.article-type-line.team {
+    background: #f0f0f0;
+    color: #ffc107;
+}
+.article-index {
+    display: none;
+}
+.article-title {
+    text-decoration: none;
+    color: #222;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    margin-bottom: 8px;
+}
+.article-title:hover {
+    text-decoration: underline;
+}
+@media (max-width: 650px) {
+    .article-list {
+        max-width: 100%;
+        padding: 0 8px;
+    }
+    .article-item {
+        width: 100%;
+        min-width: 0;
+        padding: 16px 8px;
+    }
+}
+.article-not-found {
+    text-align: center;
+    margin: 32px 0;
+    font-size: 18px;
+    color: #ff3838;
+}
+#article-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center; /* 默认将容器内所有内容居中 */
+}
+#article-content p {
+    text-align: left;
+    overflow-wrap: break-word;
+}
+#article-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 24px auto;
+    border-radius: 6px;
 }

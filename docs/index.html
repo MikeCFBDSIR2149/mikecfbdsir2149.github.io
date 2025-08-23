@@ -2,24 +2,49 @@
 <html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <title>MikeCFBDSIR2149 Github Pages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MikeCFBDSIR2149 GitHub Pages</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>MikeCFBDSIR2149 Github Pages</h1>
+        <h1>MikeCFBDSIR2149 GitHub Pages</h1>
     </header>
     <nav>
         <button onclick="window.location.href='https://github.com/MikeCFBDSIR2149'">
             <img src="icon/github-mark-white.png" alt="GitHub" style="height:20px; margin-right:10px;">
-            前往 Github 主页
+            前往 GitHub 主页
         </button>
     </nav>
     <main>
-        无内容
+    <h2>所有内容</h2>
+    <div class="article-list" id="article-list"></div>
     </main>
+    <script>
+    fetch('articles.json')
+        .then(res => res.json())
+        .then(data => {
+            const list = document.getElementById('article-list');
+                    data.forEach(article => {
+                        const item = document.createElement('div');
+                        item.className = 'article-item';
+                        let typeHtml = '';
+                        if (article.type === 'personal') {
+                            typeHtml = '<span class="article-type personal">独立项目</span>';
+                        } else if (article.type === 'team') {
+                            typeHtml = '<span class="article-type team">团队项目</span>';
+                        }
+                        item.innerHTML = `
+                            ${typeHtml}
+                            <a href="articles/classic.html?id=${article.id}" class="article-title">${article.title}</a>
+                            <p class="article-summary">${article.summary}</p>
+                        `;
+                        list.appendChild(item);
+                    });
+        });
+    </script>
     <footer>
-        © 2025 MikeCFBDSIR2149
+        © 2025 MikeCFBDSIR2149 翟赜昊
     </footer>
 </body>
 </html>
