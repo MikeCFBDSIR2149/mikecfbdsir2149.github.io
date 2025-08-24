@@ -17,32 +17,59 @@
         </button>
     </nav>
     <main>
-    <h2>所有游戏</h2>
-    <button onclick="window.location.href='games/OneButton/index.html'" style="padding: 0.5em 1em; font-size: 1em; margin-bottom: 2em;">FruitKing 游戏</button>
     <h2>所有内容</h2>
     <div class="article-list" id="article-list"></div>
+    <h2>所有 WebGL 演示</h2>
+    <div class="game-list" id="game-list"></div>
     </main>
     <script>
     fetch('articles.json')
         .then(res => res.json())
         .then(data => {
             const list = document.getElementById('article-list');
-                    data.forEach(article => {
-                        const item = document.createElement('div');
-                        item.className = 'article-item';
-                        let typeHtml = '';
-                        if (article.type === 'personal') {
-                            typeHtml = '<span class="article-type personal">独立项目</span>';
-                        } else if (article.type === 'team') {
-                            typeHtml = '<span class="article-type team">团队项目</span>';
-                        }
-                        item.innerHTML = `
-                            ${typeHtml}
-                            <a href="articles/classic.html?id=${article.id}" class="article-title">${article.title}</a>
-                            <p class="article-summary">${article.summary}</p>
-                        `;
-                        list.appendChild(item);
-                    });
+            data.forEach(article => {
+                const item = document.createElement('div');
+                item.className = 'article-item';
+                let typeHtml = '';
+                if (article.type === 'personal') {
+                    typeHtml = '<span class="article-type personal">独立项目</span>';
+                } else if (article.type === 'team') {
+                    typeHtml = '<span class="article-type team">团队项目</span>';
+                }
+                item.innerHTML = `
+                    ${typeHtml}
+                    <a href="articles/classic.html?id=${article.id}" class="article-title">${article.title}</a>
+                    <p class="article-summary">${article.summary}</p>
+                `;
+                list.appendChild(item);
+            });
+        });
+    fetch('games.json')
+        .then(res => res.json())
+        .then(data => {
+            const gameList = document.getElementById('game-list');
+            data.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                const title = document.createElement('div');
+                title.className = 'game-card-title';
+                title.textContent = game.name;
+                const btn = document.createElement('button');
+                btn.className = 'game-card-btn';
+                btn.style.display = 'flex';
+                btn.style.alignItems = 'center';
+                btn.style.justifyContent = 'center';
+                btn.onclick = () => window.location.href = game.link;
+                const icon = document.createElement('img');
+                icon.src = 'icon/github-mark-white.png';
+                icon.alt = '进入游戏';
+                icon.style.width = '24px';
+                icon.style.height = '24px';
+                btn.appendChild(icon);
+                card.appendChild(title);
+                card.appendChild(btn);
+                gameList.appendChild(card);
+            });
         });
     </script>
     <footer>

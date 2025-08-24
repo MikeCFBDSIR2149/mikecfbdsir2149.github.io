@@ -5,7 +5,7 @@
         "summary": "文章一的摘要。",
         "type": "personal",
         "public": true,
-        "link": "https://github.com/MikeCFBDSIR2149",
+        "link": "https://github.com/MikeCFBDSIR2149/OneButton",
         "content": [
         { "type": "text", "value": "开头" },
         { "type": "image", "src": "../images/1-1.png", "alt": "图片1-1" },
@@ -20,7 +20,7 @@
         "summary": "文章二的摘要。",
         "type": "team",
         "public": false,
-        "link": "https://github.com/MikeCFBDSIR2149",
+        "link": "https://github.com/MikeCFBDSIR2149/3D-RPG",
         "content": [
         { "type": "text", "value": "开头" },
         { "type": "image", "src": "../images/2-1.png", "alt": "图片2-1" },
