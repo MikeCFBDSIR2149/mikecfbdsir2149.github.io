@@ -1,18 +1,6 @@
 [
-  {
-    "name": "FruitKing",
-    "link": "games/OneButton/index.html"
-  },
-  {
-    "name": "FruitKing",
-    "link": "games/OneButton/index.html"
-  },
-  {
-    "name": "FruitKing",
-    "link": "games/OneButton/index.html"
-  },
-  {
-    "name": "FruitKing",
-    "link": "games/OneButton/index.html"
-  }
+    {
+        "name": "FruitKing",
+        "link": "games/OneButton/index.html"
+    }
 ]

@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>MikeCFBDSIR2149 GitHub Pages</h1>
+        <h1>内容详情</h1>
     </header>
     <nav>
         <button onclick="location.href='../index.html'">主页</button>
@@ -46,7 +46,20 @@
                         } else if (item.type === 'image') {
                             html += `<img src="${item.src}" alt="${item.alt}" style="max-width:100%;margin:16px 0;">`;
                         }
+                        else if (item.type === 'video') {
+                            html += `<video controls style="max-width:100%;margin:16px auto;display:block;"${item.poster ? ` poster="${item.poster}"` : ''}>
+                                <source src="${item.src}">
+                                抱歉，视频无法播放。
+                            </video>`;
+                        }
                     });
+                    if (article.comment) {
+                        html += `<div class="article-comment">${article.comment.replace(/\\n/g, '<br>')}</div>`;
+                    }
+                    if (article.gameLink) {
+                        html += `<button class="game-card-btn" style="margin:24px auto 0 auto;" onclick="window.open('${article.gameLink}','_blank')">${article.gameText || '开始游戏'}</button>`;
+                    }
+                    html += `<button class="top-btn" style="margin:32px auto 0 auto;" onclick="window.scrollTo({top:0,behavior:'smooth'});">回到顶部</button>`;
                     document.getElementById('article-content').innerHTML = html;
                     if (article.link) {
                         document.getElementById('github-btn').onclick = function() {

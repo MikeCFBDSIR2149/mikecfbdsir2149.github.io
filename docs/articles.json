@@ -1,58 +1,83 @@
 [
     {
         "id": 1,
-        "title": "标题一",
-        "summary": "文章一的摘要。",
+        "title": "基于 SPH 算法的 SSF 流体模拟和交互",
+        "summary": "使用 SPH（平滑粒子流体动力学）算法，对流体进行模拟，并支持和刚体的粗略交互。",
         "type": "personal",
         "public": true,
-        "link": "https://github.com/MikeCFBDSIR2149/OneButton",
+        "link": "https://github.com/MikeCFBDSIR2149/SPHSimulation",
         "content": [
-        { "type": "text", "value": "开头" },
-        { "type": "image", "src": "../images/1-1.png", "alt": "图片1-1" },
-        { "type": "text", "value": "中间" },
-        { "type": "image", "src": "../images/1-2.png", "alt": "图片1-2" },
-        { "type": "text", "value": "结尾" }
+        { "type": "text", "value": "在这个项目中，我尝试实现了较为高效 SPH（光滑粒子流体动力学）粒子模拟，并且实现粒子渲染和 SSF（表面空间流体）渲染，然后还添加了一定程度的固体流体交互功能。这个项目最后可以以单纯的 GPU 粒子或 SSF 渲染这两种形式观察模拟情况。" },
+        { "type": "text", "value": "这个项目基于 Unity 6 URP。下图展示了代码逻辑整体流程。" },
+        { "type": "image", "src": "../images/1-1.png", "alt": "代码逻辑整体流程" },
+        { "type": "text", "value": "关于 SSF，这是一个屏幕空间的方法，通过读取深度纹理，模糊后重建表面法线，计算新的空间位置，来达到让单独的粒子变成连续液面的效果。" },
+        { "type": "text", "value": "在这个项目中，为了实现 SSF 对渲染细节的修改，我使用了 SRP 可以自定义 RenderFeature 的特性，插入了一个自己编写的 RenderFeature。如果是 GPU 粒子模式，只需要关闭这个 RenderFeature 就可以回到标准的渲染模式。" },
+        { "type": "text", "value": "本项目的核心点并不完全是 SPH 的算法，更重要的是性能问题。早期使用 C# 脚本（CPU 计算）时，模拟结果基本上看不出来这是流体模拟，并且粒子数量基本上不能超过千的数量级。但经过优化，现已支持超过十万数量级的粒子渲染，并且有明显的效果。所以下面是我对项目的性能和模拟过程做的优化：" },
+        { "type": "text", "value": "1.GPU 加速。使用 Compute Shader 调用 GPU 计算每个粒子的各项数据，并通过 StructuredBuffer 直接传递给 Shader 进行后面的处理，全程不需要 CPU 进行中介。如果是 GPU 粒子模式下，CPU 也仅仅起到调用 DrawMeshInstancedIndirect 方法的作用。" },
+        { "type": "text", "value": "2.边界处理。早期我是用的硬边界，也就是粒子到达边界直接速度反向。后来我改用边界粒子，即在边界生成不可见的，但是参与计算的粒子，这样一来，粒子在边界的行为就更加自然。" },
+        { "type": "text", "value": "3.哈希算法。我实现了一种基于空间划分的哈希算法。通过将粒子划分到不同的网格中，可以快速找到相邻粒子，从而减少不必要的计算。其实这种方法跟光线追踪的 AABB 包围盒有些类似。然后我们按照 xyz 轴排序包围盒，并赋予哈希值。对于每个粒子只需要知道他所在的包围盒即可。" },
+        { "type": "text", "value": "4.双调排序。上面提到哈希，但为了加快寻找，我们势必要对哈希网格进行处理。计算了粒子所在哈希网格的哈希值后，查找相邻粒子时只需要在同一个或相邻哈希网格内进行。因此，需要对粒子按哈希值进行排序，让相同哈希的粒子在数据结构中是连续的。粒子数量都是万级以上，一般的排序需要较长时间，所以我引入了双调排序，这是一种可以利用 GPU 加速的并行排序算法。" },
+        { "type": "text", "value": "至于渲染的算法，前面说到已经可以将数据写入 Shader 中，如果直接渲染出来（即 GPU 粒子模式），因为 Buffer 中包含位置等信息，可以直接做 MVP 变换，提供一个渲染半径，然后片元着色器直接返回简单色即可。如果是 SSF，就是把数据进一步处理，用多个 RenderPass 实现计算深度、输出深度图、高斯模糊、采样并重建表面法线、最终着色的步骤。" },
+        { "type": "image", "src": "../images/1-2.png", "alt": "渲染流程示意图" },
+        { "type": "text", "value": "上图展示了渲染流程。（针对 SSF 模式）" },
+        { "type": "image", "src": "../images/1-3.png", "alt": "GPU 粒子模式截图" },
+        { "type": "text", "value": "上图是 GPU 粒子模式的渲染截图。" },
+        { "type": "image", "src": "../images/1-4.png", "alt": "SSF 渲染模式截图" },
+        { "type": "text", "value": "上图是 SSF 渲染模式的渲染截图。（这张图和 GPU 粒子模式相比，调换了视角到水面下方，因为这个天空盒下面是偏灰色，如果按照之前的视角截图，效果不明显）" },
+        { "type": "video", "src": "../videos/1-1.mp4" },
+        { "type": "text", "value": "但是，我必须承认项目还是有一些瑕疵。SSF 效果不是那么好，模糊效果会随着摄像机距离变化，我想这也是屏幕空间处理本身带来的弊端。最重要的一点就是和刚体交互时，刚体和流体的遮挡关系存在问题，尽管我尝试了各种深度检测和剔除，也努力研究代码中存在的错误，但我总感觉流体的深度和 GameObject 的深度并不在同一尺度。遮挡关系总是出错。也许是我的技术水平还不够高，或者是算法本身的局限性。总之，这个项目还有很大的改进空间。"}
         ]
     },
     {
         "id": 2,
-        "title": "标题二",
-        "summary": "文章二的摘要。",
+        "title": "FruitKing - OneButton 命题作品",
+        "summary": "这是一个街机游戏。限制为玩家从始至终都只能控制一个按键。设计该游戏旨在探索极简交互下的游戏体验和可玩性。作为设计者能够利用“可控制的因素”和“自动变化的因素”。",
         "type": "team",
-        "public": false,
-        "link": "https://github.com/MikeCFBDSIR2149/3D-RPG",
+        "public": true,
+        "link": "https://github.com/MikeCFBDSIR2149/OneButton",
         "content": [
-        { "type": "text", "value": "开头" },
+        { "type": "text", "value": "这个游戏是命题的项目，命题为 OneButton。顾名思义，只有一个按键。" },
+        { "type": "text", "value": "一个按键，意味着设计的选择很有限。但我的思考是，什么是动的，什么是可控的。在这里，时间可以动，也就是说。我们可以设计倒计时，如果设计倒计时，那么意味着玩家的目标要么是通关，要么是高分。我们选择了后者，因此这个游戏的雏形就是一个街机游戏。" },
+        { "type": "text", "value": "至于游戏的形式，很明显这里结合了《水果忍者》和《胡闹厨房》的机制。玩家短按空格切水果（不同的是一个水果可以切多次，每次只掉落一个水果片，所以考验手速）。但是这样的话玩家就会一直切水果了。我们势必需要一些限制。除了时间以外，我们引入了《胡闹厨房》类似的订单机制，要求玩家不能切错水果，一旦切错订单失败没有加分，并且当前订单直接结束。从游戏心理学角度，这属于“负惩罚”，也就是通过撤销订单进度和不加分，降低玩家切错的概率。玩家提交订单的方式是长按空格，所以玩家不能忘记这件事情，否则如果后面多切了也会失败。" },
         { "type": "image", "src": "../images/2-1.png", "alt": "图片2-1" },
-        { "type": "text", "value": "正文" }
-        ]
+        { "type": "text", "value": "上图为游戏实机截图。" }
+        ],
+        "comment": "这是团队项目。本人参与游戏机制的设计，并担任主程序。\\n此项目有 WebGL 演示，请点击“转到项目 WebGL 演示”以导航。",
+        "gameLink": "../games/OneButton/index.html",
+        "gameText": "转到项目 WebGL 演示"
     },
     {
         "id": 3,
-        "title": "标题三",
-        "summary": "文章三的摘要。",
-        "type": "personal",
-        "public": false,
-        "link": "https://github.com/MikeCFBDSIR2149",
+        "title": "逐光",
+        "summary": "TapTap 聚光灯 GameJam 作品。玩家控制光源发射器的方向和开关，两束光十字交汇处形成实体“光块”，玩家借助“光块”通关。",
+        "type": "team",
+        "public": true,
+        "link": "https://github.com/MikeCFBDSIR2149/Light",
         "content": [
-        { "type": "text", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
-        { "type": "image", "src": "../images/3-1.png", "alt": "图片3-1" },
-        { "type": "text", "value": "中间" },
-        { "type": "image", "src": "../images/3-2.png", "alt": "图片3-2" },
-        { "type": "text", "value": "结尾" }
-        ]
+        { "type": "text", "value": "内容为空。" }
+        ],
+        "comment": "这是团队项目。本人负责创意策划设计和后期的主要算法程序开发。"
     },
     {
         "id": 4,
-        "title": "标题四",
-        "summary": "文章四的摘要。",
-        "type": "other",
+        "title": "归海",
+        "summary": "CUSGA 2025 参赛作品。由于时间紧张，这个作品并非完整版。最终只把它作为一个 3D RPG 项目模版。但我在其中结合运用了 Unity 的大量功能和技术。",
+        "type": "personal",
         "public": false,
-        "link": "https://github.com/MikeCFBDSIR2149",
+        "link": "https://github.com/MikeCFBDSIR2149/3D-RPG",
         "content": [
-        { "type": "text", "value": "开头" },
-        { "type": "image", "src": "../images/4-1.png", "alt": "图片4-1" },
-        { "type": "text", "value": "正文" }
+        { "type": "text", "value": "内容为空。" }
+        ]
+    },
+    {
+        "id": 5,
+        "title": "锁链奇谜",
+        "summary": "玩家将置身于鲁班锁的世界中，保持自身安全的情况下，解开鲁班锁。这是我第一次参与较为正式的项目。",
+        "type": "other",
+        "public": true,
+        "link": "https://github.com/MikeCFBDSIR2149/GameDev1",
+        "content": [
+        { "type": "text", "value": "内容为空。" }
         ]
     }
 ]
