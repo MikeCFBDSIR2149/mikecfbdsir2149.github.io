@@ -40,11 +40,24 @@
                         typeLine = `<div class="article-type-line team">团队项目</div>`;
                     }
                     let html = `<h2>${article.title}</h2>${typeLine}<p class="article-summary">${article.summary}</p>`;
+                    if (article.alert && article.alert.trim() !== '') {
+                        html += `
+                            <div class="article-alert">
+                                <img src="../icon/warning-icon.png" alt="提示">
+                                <span>${article.alert}</span>
+                            </div>
+                        `;
+                    }
                     article.content.forEach(item => {
                         if (item.type === 'text') {
                             html += `<p>${item.value}</p>`;
                         } else if (item.type === 'image') {
-                            html += `<img src="${item.src}" alt="${item.alt}" style="max-width:100%;margin:16px 0;">`;
+                            html += `<figure>`;
+                            html += `<img src="${item.src}" alt="${item.alt || ''}">`;
+                            if (item.alt && item.alt.trim() !== '') {
+                                html += `<figcaption class="article-comment">${item.alt}</figcaption>`;
+                            }
+                            html += `</figure>`;
                         }
                         else if (item.type === 'video') {
                             html += `<video controls style="max-width:100%;margin:16px auto;display:block;"${item.poster ? ` poster="${item.poster}"` : ''}>
@@ -56,8 +69,8 @@
                     if (article.comment) {
                         html += `<div class="article-comment">${article.comment.replace(/\\n/g, '<br>')}</div>`;
                     }
-                    if (article.gameLink) {
-                        html += `<button class="game-card-btn" style="margin:24px auto 0 auto;" onclick="window.open('${article.gameLink}','_blank')">${article.gameText || '开始游戏'}</button>`;
+                    if (article.externalLink) {
+                        html += `<button class="game-card-btn" style="margin:24px auto 0 auto;" onclick="window.open('${article.externalLink}','_blank')">${article.externalText || '开始游戏'}</button>`;
                     }
                     html += `<button class="top-btn" style="margin:32px auto 0 auto;" onclick="window.scrollTo({top:0,behavior:'smooth'});">回到顶部</button>`;
                     document.getElementById('article-content').innerHTML = html;
